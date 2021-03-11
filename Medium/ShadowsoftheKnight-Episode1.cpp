@@ -39,25 +39,23 @@ int main()
         for (int i = 0; i < bombDir.length(); i++){
             string direction {bombDir[i]};
             if (direction == "U"){
-                y = Y0 - (Y0 - ymin) / 2;
+                y = (Y0 + ymin) / 2;
                 ymax = Y0;
-                Y0 = y;
                 }
             else if (direction == "D"){
-                y = (ymax - Y0) / 2 + Y0;
+                y = (Y0 + ymax) / 2;
                 ymin = Y0;
-                Y0 = y;
             }
             else if (direction == "L"){
-                x = X0 - (X0 - xmin) / 2;
+                x = (X0 + xmin) / 2;
                 xmax = X0;
-                X0 = x;
             }
             else if (direction == "R") {
-                x = (xmax - X0) / 2 + X0;
+                x = (X0 + xmax) / 2;
                 xmin = X0;
-                X0 = x;
             }
+            Y0 = y;
+            X0 = x;
         }
 
         // the location of the next window Batman should jump to.
