@@ -13,20 +13,15 @@ using namespace std;
 
 int main()
 {
-    int W; // width of the building.
-    int H; // height of the building.
+    int W, H; // width/height of the building.
     cin >> W >> H; cin.ignore();
     int N; // maximum number of turns before game over.
     cin >> N; cin.ignore();
-    int X0;
-    int Y0;
+    int X0, Y0; // Batman starting position.
     cin >> X0 >> Y0; cin.ignore();
-    int x {0};
-    int y {0};
-    int xmin {-1};
-    int xmax {W + 1};
-    int ymin {-1};
-    int ymax {H + 1};
+    int x {0}, y {0};
+    int xmin {-1}, xmax {W + 1};
+    int ymin {-1}, ymax {H + 1};
 
     // game loop
     while (1) {
@@ -59,6 +54,7 @@ int main()
                 X0 = x;
             }
         }
+        // DEBUG: cerr << "Xmin: " << xmin << " Xmax: " << xmax << endl;
         // the location of the next window Batman should jump to.
         cout << x << " " << y << endl;
     }
