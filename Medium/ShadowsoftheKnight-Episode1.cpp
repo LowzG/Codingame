@@ -41,23 +41,24 @@ int main()
             if (direction == "U"){
                 y = (Y0 + ymin) / 2;
                 ymax = Y0;
+                Y0 = y;
                 }
             else if (direction == "D"){
                 y = (Y0 + ymax) / 2;
                 ymin = Y0;
+                Y0 = y;
             }
             else if (direction == "L"){
                 x = (X0 + xmin) / 2;
                 xmax = X0;
+                X0 = x;
             }
             else if (direction == "R") {
                 x = (X0 + xmax) / 2;
                 xmin = X0;
+                X0 = x;
             }
-            Y0 = y;
-            X0 = x;
         }
-
         // the location of the next window Batman should jump to.
         cout << x << " " << y << endl;
     }
