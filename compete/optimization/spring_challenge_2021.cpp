@@ -5,21 +5,40 @@
 
 using namespace std;
 
-/**
- * Auto-generated code below aims at helping you parse
- * the standard input according to the problem statement.
- **/
+/*
+Game Info:
+Map index starts at 0 is the center cell, the next cells spiral outwards
+Richness values are: 0 if the cell is unusable, 1-3 for usable cells
+Tree sizes: 0-3
+*/
 
 int cell_data_size {8};
 int tree_data_size {4};
+int index = 0;
+int richness, tree_size = 1;
+int neigh0, tree_isMine = 2;
+int neigh1, tree_isDormant = 3;
+int neigh2 = 4;
+int neigh3 = 5;
+int neigh4 = 6;
+int neigh5= 7;
+// Todo add step for tree iteration (8)
 
-int grid_walk(int grid_index, int cell_index){
+int vec_walk(string vec, int item_index, int data_index){
     // Wrote this to avoid creating 2D vectors
-    return cell_index + (grid_index * cell_data_size);
+
+    int data_size {};
+    if (vec == "map"){
+        data_size = cell_data_size;
+    } else if (vec == "tree"){
+        data_size = tree_data_size;
+    } else return;
+    
+    return data_index + (item_index * data_size);
 } 
 
 int possible_points(int tree_index, int forest_nutrient, vector<int> &grid) {
-    return forest_nutrient + grid[grid_walk(tree_index, 1)];
+    return forest_nutrient + grid[vec_walk("map", tree_index, richness)];
 }
 
 int main(){
@@ -28,18 +47,9 @@ int main(){
     vector<int> grid(numberOfCells * cell_data_size);
     vector<int> trees(numberOfCells * tree_data_size);
     for (int i = 0; i < numberOfCells; i++) {
-        // int index; // 0 is the center cell, the next cells spiral outwards
-        // int richness; // 0 if the cell is unusable, 1-3 for usable cells
-        // int neigh0; // the index of the neighbouring cell for each direction
-        // int neigh1;
-        // int neigh2;
-        // int neigh3;
-        // int neigh4;
-        // int neigh5;
-        // cin >> index >> richness >> neigh0 >> neigh1 >> neigh2 >> neigh3 >> neigh4 >> neigh5; cin.ignore();
         vector<int> cell(cell_data_size);
         for (int j{0}; j < cell_data_size; j++) {
-            cin >> grid[grid_walk(i, j)];
+            cin >> grid[vec_walk("map", i, j)];
         }
         cin.ignore();
     }
@@ -61,13 +71,9 @@ int main(){
         cin >> numberOfTrees; cin.ignore();
         trees.resize(numberOfTrees * tree_data_size);
         for (int i = 0; i < numberOfTrees; i++) {
-            // int cellIndex; // location of this tree
-            // int size; // size of this tree: 0-3
-            // bool isMine; // 1 if this is your tree
-            // bool isDormant; // 1 if this tree is dormant
-            // cin >> cellIndex >> size >> isMine >> isDormant; cin.ignore();
+            
             for (int j{0}; j < tree_data_size; j++){
-                cin >> trees[grid_walk(i, j)];
+                cin >> trees[vec_walk("tree", i, j)];
             }
             cin.ignore();
         }
@@ -81,8 +87,8 @@ int main(){
         int tree_points {};
         for (int i{0}; i < numberOfPossibleActions; i++){
             for (int j{0}; j < numberOfTrees; j++){
-                if (trees[grid_walk(j, 2)]){
-                    int tree_index = trees[grid_walk(j, 0)];
+                if (trees[vec_walk("tree", j, tree_isMine)]){
+                    int tree_index = trees[vec_walk("tree", j, index)];
                     int new_tree_points = possible_points(tree_index, nutrients, grid);
                     if (new_tree_points < tree_points){
                         continue;
