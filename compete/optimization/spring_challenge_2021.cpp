@@ -32,7 +32,7 @@ int vec_walk(string vec, int item_index, int data_index){
         data_size = cell_data_size;
     } else if (vec == "tree"){
         data_size = tree_data_size;
-    } else return;
+    } else return 0;
     
     return data_index + (item_index * data_size);
 } 
