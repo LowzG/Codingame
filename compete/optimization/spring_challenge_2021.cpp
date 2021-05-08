@@ -41,6 +41,19 @@ int possible_points(int tree_index, int forest_nutrient, vector<int> &grid) {
     return forest_nutrient + grid[vec_walk("map", tree_index, richness)];
 }
 
+int tree_grow_cost(int tree_size, int size_2_trees, int size_3_trees){
+    int sun_points {};
+    int num_trees {};
+    if (tree_size == 1){
+        sun_points = 3;
+        num_trees = size_2_trees;
+    } else if (tree_size == 2){
+        sun_points = 7;
+        num_trees = size_3_trees;
+    }
+    return sun_points + num_trees;
+}
+
 int main(){
     int numberOfCells; // 37
     cin >> numberOfCells; cin.ignore();
@@ -71,7 +84,6 @@ int main(){
         cin >> numberOfTrees; cin.ignore();
         trees.resize(numberOfTrees * tree_data_size);
         for (int i = 0; i < numberOfTrees; i++) {
-            
             for (int j{0}; j < tree_data_size; j++){
                 cin >> trees[vec_walk("tree", i, j)];
             }
