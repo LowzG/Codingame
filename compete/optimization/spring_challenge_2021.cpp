@@ -96,11 +96,18 @@ int main(){
             getline(cin, possibleAction); // try printing something from here to start with
         }
         int harvest_tree {};
+        int grow_tree {};
         int tree_points {};
+        vector<int> tree_sizes{0,0,0,0};
         for (int i{0}; i < numberOfPossibleActions; i++){
             for (int j{0}; j < numberOfTrees; j++){
                 if (trees[vec_walk("tree", j, tree_isMine)]){
                     int tree_index = trees[vec_walk("tree", j, index)];
+                    int tree_size = trees[vec_walk("tree", j, tree_size)];
+                    tree_sizes[tree_size] += tree_size;
+                    if (tree_size < 3){
+                        int grow_cost = tree_grow_cost(tree_size, trees[2], trees[3]);
+                    }
                     int new_tree_points = possible_points(tree_index, nutrients, grid);
                     if (new_tree_points < tree_points){
                         continue;
