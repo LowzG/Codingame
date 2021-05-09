@@ -12,33 +12,29 @@ Richness values are: 0 if the cell is unusable, 1-3 for usable cells
 Tree sizes: 0-3
 */
 
-int cell_data_size {8};
-int tree_data_size {4};
-int index = 0;
-int richness, tree_size = 1;
-int neigh0, tree_isMine = 2;
-int neigh1, tree_isDormant = 3;
-int neigh2 = 4;
-int neigh3 = 5;
-int neigh4 = 6;
-int neigh5= 7;
-// Todo add step for tree iteration (8)
+class Tree {
+    public:
+        int index;
+        int size;
+        bool isMine;
+        bool isDormant;
+};
 
-int vec_walk(string vec, int item_index, int data_index){
-    // Wrote this to avoid creating 2D vectors
+class Cell {
+    public:
+        int index;
+        int richness;
+        int neigh0;
+        int neigh1;
+        int neigh2;
+        int neigh3;
+        int neigh4;
+        int neigh5;
 
-    int data_size {};
-    if (vec == "map"){
-        data_size = cell_data_size;
-    } else if (vec == "tree"){
-        data_size = tree_data_size;
-    } else return 0;
-    
-    return data_index + (item_index * data_size);
-} 
+};
 
-int possible_points(int tree_index, int forest_nutrient, vector<int> &grid) {
-    return forest_nutrient + grid[vec_walk("map", tree_index, richness)];
+int possible_points(int tree_index, int forest_nutrient, vector<Cell> &grid) {
+    return forest_nutrient + grid[tree_index].richness;
 }
 
 int tree_grow_cost(int tree_size, int size_2_trees, int size_3_trees){
@@ -57,14 +53,10 @@ int tree_grow_cost(int tree_size, int size_2_trees, int size_3_trees){
 int main(){
     int numberOfCells; // 37
     cin >> numberOfCells; cin.ignore();
-    vector<int> grid(numberOfCells * cell_data_size);
-    vector<int> trees(numberOfCells * tree_data_size);
+    vector<Cell> grid(numberOfCells);
+    vector<Tree> trees(numberOfCells);
     for (int i = 0; i < numberOfCells; i++) {
-        vector<int> cell(cell_data_size);
-        for (int j{0}; j < cell_data_size; j++) {
-            cin >> grid[vec_walk("map", i, j)];
-        }
-        cin.ignore();
+        cin >> grid[i].index >> grid[i].richness >> grid[i].neigh0 >> grid[i].neigh1 >> grid[i].neigh2 >> grid[i].neigh3 >> grid[i].neigh4 >> grid[i].neigh5; cin.ignore();
     }
 
     // game loop
@@ -82,12 +74,9 @@ int main(){
         cin >> oppSun >> oppScore >> oppIsWaiting; cin.ignore();
         int numberOfTrees; // the current amount of trees
         cin >> numberOfTrees; cin.ignore();
-        trees.resize(numberOfTrees * tree_data_size);
+        trees.resize(numberOfTrees);
         for (int i = 0; i < numberOfTrees; i++) {
-            for (int j{0}; j < tree_data_size; j++){
-                cin >> trees[vec_walk("tree", i, j)];
-            }
-            cin.ignore();
+            cin >> trees[i].index >> trees[i].size >> trees[i].isMine >> trees[i].isDormant; cin.ignore();
         }
         int numberOfPossibleActions; // all legal actions
         cin >> numberOfPossibleActions; cin.ignore();
@@ -100,13 +89,13 @@ int main(){
         int tree_points {};
         vector<int> tree_sizes{0,0,0,0};
         for (int i{0}; i < numberOfPossibleActions; i++){
-            for (int j{0}; j < numberOfTrees; j++){
-                if (trees[vec_walk("tree", j, tree_isMine)]){
-                    int tree_index = trees[vec_walk("tree", j, index)];
-                    int tree_size = trees[vec_walk("tree", j, tree_size)];
+            for (int j{0}; j < trees.size(); j++){
+                if (trees[j].isMine){
+                    int tree_index = trees[j].index;
+                    int tree_size = trees[j].size;
                     tree_sizes[tree_size] += tree_size;
                     if (tree_size < 3){
-                        int grow_cost = tree_grow_cost(tree_size, trees[2], trees[3]);
+                        int grow_cost = tree_grow_cost(tree_size, tree_sizes[2], tree_sizes[3]);
                     }
                     int new_tree_points = possible_points(tree_index, nutrients, grid);
                     if (new_tree_points < tree_points){
