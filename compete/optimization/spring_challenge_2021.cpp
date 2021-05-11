@@ -12,6 +12,9 @@ Richness values are: 0 if the cell is unusable, 1-3 for usable cells
 Tree sizes: 0-3
 */
 
+
+// Todo: Update dormant state on tree when tree action is taken
+
 class Tree {
     public:
         int index;
@@ -37,10 +40,14 @@ int possible_points(int tree_index, int forest_nutrient, vector<Cell> &grid) {
     return forest_nutrient + grid[tree_index].richness;
 }
 
-int tree_grow_cost(int tree_size, int size_2_trees, int size_3_trees){
+int tree_grow_cost(int tree_size, int size1_trees, int size_2_trees, int size_3_trees){
     int sun_points {};
     int num_trees {};
-    if (tree_size == 1){
+    if (tree_size == 0){
+        sun_points = 1;
+        num_trees = size1_trees;
+    }
+    else if (tree_size == 1){
         sun_points = 3;
         num_trees = size_2_trees;
     } else if (tree_size == 2){
@@ -75,8 +82,10 @@ int main(){
         int numberOfTrees; // the current amount of trees
         cin >> numberOfTrees; cin.ignore();
         trees.resize(numberOfTrees);
+        vector<int> tree_sizes{0,0,0,0};
         for (int i = 0; i < numberOfTrees; i++) {
             cin >> trees[i].index >> trees[i].size >> trees[i].isMine >> trees[i].isDormant; cin.ignore();
+            tree_sizes[trees[i].size] += 1;
         }
         int numberOfPossibleActions; // all legal actions
         cin >> numberOfPossibleActions; cin.ignore();
@@ -87,17 +96,17 @@ int main(){
         int harvest_tree {};
         int grow_tree {};
         int tree_points {};
-        vector<int> tree_sizes{0,0,0,0};
+        int seed_cost {tree_sizes[0]};
         for (int i{0}; i < numberOfPossibleActions; i++){
             for (int j{0}; j < trees.size(); j++){
                 if (trees[j].isMine){
                     int tree_index = trees[j].index;
                     int tree_size = trees[j].size;
                     tree_sizes[tree_size] += tree_size;
-                    if (tree_size < 3){
-                        int grow_cost = tree_grow_cost(tree_size, tree_sizes[2], tree_sizes[3]);
-                    }
                     int new_tree_points = possible_points(tree_index, nutrients, grid);
+                    if (tree_size < 3){
+                        int grow_cost = tree_grow_cost(tree_size, tree_sizes[1], tree_sizes[2], tree_sizes[3]);
+                    }
                     if (new_tree_points < tree_points){
                         continue;
                     }
@@ -110,6 +119,7 @@ int main(){
         cout << "COMPLETE " << harvest_tree << endl;
         trees.clear();
         tree_points = 0;
+        tree_sizes = {0,0,0,0};
 
     }
 }
