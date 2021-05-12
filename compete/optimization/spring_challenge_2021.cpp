@@ -27,12 +27,7 @@ class Cell {
     public:
         int index;
         int richness;
-        int neigh0;
-        int neigh1;
-        int neigh2;
-        int neigh3;
-        int neigh4;
-        int neigh5;
+        int neigh0, neigh1, neigh2, neigh3, neigh4, neigh5 = -1;
         bool has_tree;
         vector<int> neigh(){
             return vector<int> {neigh0, neigh1, neigh2, neigh3, neigh4, neigh5};
@@ -126,15 +121,15 @@ int main(){
         int grow_tree {};
         int tree_points {};
         int seed_cost {my_trees[0]};
-        string action = "";
+        string action = "WAIT";
         for (int j{0}; j < trees.size(); j++){
-            if (trees[j].isMine){
+            if (trees[j].isMine && !trees[j].isDormant){
                 int tree_index = trees[j].index;
                 int tree_size = trees[j].size;
                 int new_tree_points = possible_points(tree_index, nutrients, grid);
                 if (tree_size < 3){
                     int grow_cost = tree_grow_cost(tree_size, my_trees[1], my_trees[2], my_trees[3]);
-                    if (grow_cost < sun){
+                    if (grow_cost < (sun / 2)){
                         action = "GROW " + to_string(tree_index);
                         break;
                     }
@@ -144,11 +139,10 @@ int main(){
                 }
                 harvest_tree = trees[j];
                 tree_points = new_tree_points;
-                action = "WAIT";
             }
         }
-        if (action == "WAIT" && (my_trees[3] == my_trees[4])){
-            if (seed_cost > 4){
+        if (action == "WAIT" && (my_trees[3] > 0)){
+            if (day > 15 && sun >= 4){
                 action = "COMPLETE " + to_string(harvest_tree.index);
             } else {
                 action = drop_seed(harvest_tree, grid);
