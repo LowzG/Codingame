@@ -131,21 +131,25 @@ int main(){
             int grow_cost = tree_grow_cost(tree.size, my_trees_totals[1], my_trees_totals[2], my_trees_totals[3]);
             int seed_cost = my_trees_totals[0];
             int complete_cost = 4;
-            if (tree.size == 0 && sun > grow_cost){
+            if (my_trees_totals[3] == 0 && grow_cost < sun && tree.size < 3){
                 action = "GROW " + to_string(tree.index);
                 break;
-            } else if (tree.size == 3 && (my_trees_totals[3] > 2 || day > 20) && sun > complete_cost){
+            }
+            if (tree.size == 0 && sun >= grow_cost){
+                action = "GROW " + to_string(tree.index);
+                break;
+            } else if (tree.size == 3 && (my_trees_totals[3] > 2 || day > 20) && sun >= complete_cost){
                 action = "COMPLETE " + to_string(tree.index);
                 break;
             } else {
-                if (day < 10 && sun > seed_cost && tree.size != 0){
+                if (day < 10 && sun >= seed_cost && tree.size != 0){
                 action = drop_seed(tree, grid);
                 if (action == "No available cell to seed within reach"){
                     action = "WAIT";
                     continue;
                 }
                 break;
-                } else if (sun > grow_cost && tree.size < 3){
+                } else if (sun >= grow_cost && tree.size < 3){
                 action = "GROW " + to_string(tree.index);
                 break;
                 }
