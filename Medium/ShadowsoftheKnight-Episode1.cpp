@@ -32,26 +32,27 @@ int main()
         // To debug: cerr << "Debug messages..." << endl;
 
         for (int i = 0; i < bombDir.length(); i++){
-            string direction {bombDir[i]};
-            if (direction == "U"){
-                y = (Y0 + ymin) / 2;
-                ymax = Y0;
-                Y0 = y;
-                }
-            else if (direction == "D"){
-                y = (Y0 + ymax) / 2;
-                ymin = Y0;
-                Y0 = y;
-            }
-            else if (direction == "L"){
-                x = (X0 + xmin) / 2;
-                xmax = X0;
-                X0 = x;
-            }
-            else if (direction == "R") {
-                x = (X0 + xmax) / 2;
-                xmin = X0;
-                X0 = x;
+            switch(bombDir[i]){
+                case 'U':
+                    y = (Y0 + ymin) / 2;
+                    ymax = Y0;
+                    Y0 = y;
+                    break;
+                case 'D':
+                    y = (Y0 + ymax) / 2;
+                    ymin = Y0;
+                    Y0 = y;
+                    break;
+                case 'L':
+                    x = (X0 + xmin) / 2;
+                    xmax = X0;
+                    X0 = x;
+                    break;
+                case 'R':
+                    x = (X0 + xmax) / 2;
+                    xmin = X0;
+                    X0 = x;
+                    break;
             }
         }
         // DEBUG: cerr << "Xmin: " << xmin << " Xmax: " << xmax << endl;
