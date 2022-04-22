@@ -27,6 +27,9 @@ int main()
     cin >> base_x >> base_y; cin.ignore();
     int heroes_per_player; // Always 3
     cin >> heroes_per_player; cin.ignore();
+    vector<Entity> my_heroes(heroes_per_player);
+    vector<Entity> op_heroes(heroes_per_player);
+    vector<Entity> monsters;
 
     // game loop
     while (1) {
@@ -37,19 +40,20 @@ int main()
         }
         int entity_count; // Amount of heros and monsters you can see
         cin >> entity_count; cin.ignore();
+        monsters.resize(entity_count - (heroes_per_player * 2));
         for (int i = 0; i < entity_count; i++) {
             Entity new_entity;
             cin >> new_entity.id >> new_entity.type >> new_entity.x >> new_entity.y >> new_entity.shield_life >> new_entity.is_controlled >> new_entity.health >> new_entity.vx >> new_entity.vy >> new_entity.near_base >> new_entity.threat_for; cin.ignore();
 
             switch (new_entity.type){
                 case 0:
-                    cerr << "Entity is a monster" << endl;
+                    monsters.push_back(new_entity);
                     break;
                 case 1:
-                    cerr << "Entity is a hero" << endl;
+                    my_heroes.push_back(new_entity);
                     break;
                 case 2:
-                    cerr << "Entity is an opponent hero" << endl;
+                    op_heroes.push_back(new_entity);
                     break;
             }
         }
@@ -62,5 +66,8 @@ int main()
             // In the first league: MOVE <x> <y> | WAIT; In later leagues: | SPELL <spellParams>;
             cout << "WAIT" << endl;
         }
+        my_heroes.clear();
+        op_heroes.clear();
+        monsters.clear();
     }
 }
