@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <math.h>
 
 using namespace std;
 
@@ -18,6 +19,14 @@ class Entity {
         int vy;
         int near_base; // 0=monster with no target yet, 1=monster targeting a base
         int threat_for; // Given this monster's trajectory, is it a threat to 1=your base, 2=your opponent's base, 0=neither
+        float threat_level;
+        bool operator< (const Entity &other) const {
+            return threat_level > other.threat_level;
+        }
+};
+
+float dist(int x1, int y1, int x2, int y2) {
+    return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2) * 1.0);
 };
 
 int main()
@@ -30,6 +39,7 @@ int main()
     vector<Entity> my_heroes(heroes_per_player);
     vector<Entity> op_heroes(heroes_per_player);
     vector<Entity> monsters;
+    string action{"MOVE "};
 
     // game loop
     while (1) {
@@ -40,31 +50,47 @@ int main()
         }
         int entity_count; // Amount of heros and monsters you can see
         cin >> entity_count; cin.ignore();
-        monsters.resize(entity_count - (heroes_per_player * 2));
         for (int i = 0; i < entity_count; i++) {
             Entity new_entity;
             cin >> new_entity.id >> new_entity.type >> new_entity.x >> new_entity.y >> new_entity.shield_life >> new_entity.is_controlled >> new_entity.health >> new_entity.vx >> new_entity.vy >> new_entity.near_base >> new_entity.threat_for; cin.ignore();
 
             switch (new_entity.type){
                 case 0:
+                    new_entity.threat_level = (1 / dist(base_x, base_y, new_entity.x, new_entity.y)) * 500;
+                    if (new_entity.threat_for == 1) {
+                        new_entity.threat_level += 1000.0;
+                        if (new_entity.near_base == 1) {
+                            new_entity.threat_level += 1000.0;
+                        }
+                    }
                     monsters.push_back(new_entity);
                     break;
                 case 1:
+                    new_entity.threat_level = -1.0;
                     my_heroes.push_back(new_entity);
                     break;
                 case 2:
+                    new_entity.threat_level = -1.0;
                     op_heroes.push_back(new_entity);
                     break;
             }
         }
-        for (int i = 0; i < heroes_per_player; i++) {
+        
+        if (monsters.size() >= heroes_per_player) {
+            sort(monsters.begin(), monsters.end());
+            for (int i = 0; i < heroes_per_player; i++) {
 
             // Write an action using cout. DON'T FORGET THE "<< endl"
             // To debug: cerr << "Debug messages..." << endl;
 
 
             // In the first league: MOVE <x> <y> | WAIT; In later leagues: | SPELL <spellParams>;
-            cout << "WAIT" << endl;
+            cout << action << monsters[i].x << " " << monsters[i].y << endl;
+            }
+        } else {
+            for (int i = 0; i < heroes_per_player; i++) {
+                cout << "WAIT" << endl;
+            }
         }
         my_heroes.clear();
         op_heroes.clear();
